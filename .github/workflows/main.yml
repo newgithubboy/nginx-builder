@@ -1,0 +1,29 @@
+   name: Build Nginx for Ubuntu 22.04
+   on: workflow_dispatch
+   jobs:
+     build:
+       runs-on: ubuntu-22.04
+       steps:
+         - name: Install dependencies
+           run: sudo apt-get update && sudo apt-get install -y build-essential wget
+         - name: Download sources
+           run: |
+             wget http://nginx.org/download/nginx-1.24.0.tar.gz
+             wget https://github.com/PhilipHazel/pcre2/releases/download/pcre2-10.42/pcre2-10.42.tar.gz
+             wget http://zlib.net/zlib-1.2.13.tar.gz
+             wget https://www.openssl.org/source/openssl-1.1.1w.tar.gz
+             for f in *.tar.gz; do tar -xzf "$f"; done
+         - name: Compile Nginx
+           run: |
+             cd nginx-1.24.0
+             ./configure --with-pcre=../pcre2-10.42 --with-zlib=../zlib-1.2.13 \
+               --with-openssl=../openssl-1.1.1w --with-http_ssl_module --prefix=/tmp/nginx
+             make -j$(nproc) && make install
+         - name: Package artifact
+           run: tar czf nginx-offline.tar.gz -C /tmp nginx
+         - name: Upload artifact
+           uses: actions/upload-artifact@v4
+           with:
+             name: nginx-ubuntu2204-package
+             path: nginx-offline.tar.gz
+   
