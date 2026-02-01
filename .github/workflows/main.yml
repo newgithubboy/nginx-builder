@@ -37,7 +37,7 @@ jobs:
             --with-openssl=../openssl-1.1.1w \
             --with-http_ssl_module \
             --with-http_v2_module \
-            --prefix=/tmp/nginx
+            --prefix=/opt/nginx
           make -j$(nproc)
           make install
       - name: Package artifact
