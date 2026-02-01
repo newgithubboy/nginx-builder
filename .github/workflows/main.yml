@@ -41,7 +41,7 @@ jobs:
           make -j$(nproc)
           make install
       - name: Package artifact
-        run: tar czf nginx-offline.tar.gz -C /tmp nginx
+        run: tar czf nginx-offline.tar.gz -C /opt nginx
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
